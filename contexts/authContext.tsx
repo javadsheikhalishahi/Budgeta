@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 export type UserType = {
   name: string | null;
+  image: string | null;
 };
 
 type AuthContextType = {
@@ -33,10 +34,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkLogin();
   }, []);
 
-  const register = async (name: string, pin: string) => {
+  const register = async (name: string, pin: string, image?: string) => {
     if (!name.trim()) return { success: false, msg: "Name cannot be empty" };
     if (!pin || pin.length < 4) return { success: false, msg: "PIN must be at least 4 digits" };
-    const userData = { name: name.trim() };
+    const userData: UserType = { name: name.trim(), image: image || null };
     try {
       await AsyncStorage.setItem("user", JSON.stringify(userData));
       await AsyncStorage.setItem("userPin", pin); // save PIN
