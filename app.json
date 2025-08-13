@@ -31,11 +31,7 @@
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-<<<<<<< HEAD
           "backgroundColor": "#000000"
-=======
-          "backgroundColor": "#ffffff"
->>>>>>> origin/main
         }
       ]
     ],
