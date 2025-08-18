@@ -1,16 +1,27 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as LocalAuthentication from "expo-local-authentication";
+import { router } from "expo-router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 export type UserType = {
   name: string | null;
   image: string | null;
+  currency?: string | null;
+  savingsGoal?: number;
+  budgetLimit?: number;
+  privacyMode?: boolean;
+  weekStart?: string;
+  notifications?: boolean;
 };
 
 type AuthContextType = {
   user: UserType | null;
   setUser: React.Dispatch<React.SetStateAction<UserType | null>>;
-  register: (name: string, pin: string) => Promise<{ success: boolean; msg?: string }>;
+  register: (
+    name: string,
+    pin: string,
+    currency?: string,
+  ) => Promise<{ success: boolean; msg?: string }>;
   loginWithBiometrics: () => Promise<{ success: boolean; msg?: string }>;
   loginWithPin: (pin: string) => Promise<{ success: boolean; msg?: string }>;
   logout: () => Promise<void>;
@@ -19,7 +30,9 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<UserType | null>(null);
 
   // Always require authentication on app launch
@@ -34,10 +47,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     checkLogin();
   }, []);
 
-  const register = async (name: string, pin: string, image?: string) => {
+  const register = async (
+    name: string,
+    pin: string,
+    image?: string,
+    currency?: string,
+    savingsGoal?: number
+  ) => {
     if (!name.trim()) return { success: false, msg: "Name cannot be empty" };
-    if (!pin || pin.length < 4) return { success: false, msg: "PIN must be at least 4 digits" };
-    const userData: UserType = { name: name.trim(), image: image || null };
+    if (!pin || pin.length < 4)
+      return { success: false, msg: "PIN must be at least 4 digits" };
+
+    const userData: UserType = {
+      name: name.trim(),
+      image: image || null,
+      currency: currency || null,
+      savingsGoal: savingsGoal ?? 0, 
+    };
+
     try {
       await AsyncStorage.setItem("user", JSON.stringify(userData));
       await AsyncStorage.setItem("userPin", pin); // save PIN
@@ -51,10 +78,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const loginWithBiometrics = async () => {
     try {
       const hasHardware = await LocalAuthentication.hasHardwareAsync();
-      if (!hasHardware) return { success: false, msg: "Biometric hardware not available" };
+      if (!hasHardware)
+        return { success: false, msg: "Biometric hardware not available" };
 
       const savedUser = await AsyncStorage.getItem("user");
-      if (!savedUser) return { success: false, msg: "No user found, please register" };
+      if (!savedUser)
+        return { success: false, msg: "No user found, please register" };
 
       const bioAuth = await LocalAuthentication.authenticateAsync({
         promptMessage: "Authenticate to login",
@@ -76,7 +105,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const storedPin = await AsyncStorage.getItem("userPin");
       const savedUser = await AsyncStorage.getItem("user");
-      if (!storedPin || !savedUser) return { success: false, msg: "No user or PIN found" };
+      if (!storedPin || !savedUser)
+        return { success: false, msg: "No user or PIN found" };
       if (pin === storedPin) {
         setUser(JSON.parse(savedUser));
         return { success: true };
@@ -97,6 +127,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
     await AsyncStorage.removeItem("user");
     await AsyncStorage.removeItem("userPin");
+    router.replace("/register");
   };
 
   return (

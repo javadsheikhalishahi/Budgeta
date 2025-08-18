@@ -6,7 +6,7 @@ import { StyleSheet } from 'react-native';
 const StackLayout = () => {
   return (
     <Stack screenOptions={{ headerShown: false }}>
-        
+      
     </Stack>
   )
 };

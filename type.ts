@@ -132,6 +132,12 @@ export type UserType = {
     email?: string | null;
     name: string | null;
     image?: any;
+    currency?: string | null;
+    savingsGoal?: number;
+    budgetLimit?: number;
+    privacyMode?: boolean;
+    weekStart?: string;
+    notifications?: boolean;
 } | null;
 
 export type UserDataType = {

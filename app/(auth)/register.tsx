@@ -1,5 +1,6 @@
 import BackButton from "@/components/BackButton";
 import Button from "@/components/Button";
+import CurrencyDropdown from "@/components/CurrencyDropdown";
 import Input from "@/components/Input";
 import ScreenWrapper from "@/components/ScreenWrapper";
 import TrendAlert from "@/components/TrendAlert";
@@ -16,12 +17,16 @@ import { Pressable, StyleSheet, View } from "react-native";
 const Register = () => {
   const nameRef = useRef("");
   const pinRef = useRef("");
+  const currencyRef = useRef("");
+  const [currency, setCurrency] = useState("USD");
   const [alertVisible, setAlertVisible] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const { register } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
-  const [alertType, setAlertType] = useState<"error" | "success" | "info">("error");
+  const [alertType, setAlertType] = useState<"error" | "success" | "info">(
+    "error"
+  );
 
   const handleSubmit = async () => {
     if (!nameRef.current.trim()) {
@@ -37,7 +42,11 @@ const Register = () => {
       return;
     }
     setIsLoading(true);
-    const res = await register(nameRef.current, pinRef.current);
+    const res = await register(
+      nameRef.current,
+      pinRef.current,
+      currencyRef.current
+    );
     setIsLoading(false);
 
     if (!res.success) {
@@ -65,24 +74,24 @@ const Register = () => {
       <View style={styles.container}>
         <BackButton iconSize={28} />
         <View style={{ gap: 3, marginTop: spacingY._3 }}>
-          <Typo size={32} fontWeight={"800"} style={{ lineHeight: 38,  }}>
+          <Typo size={32} fontWeight={"800"} style={{ lineHeight: 38 }}>
             Let`s,
           </Typo>
-          <Typo size={32} fontWeight={"800"} style={{ lineHeight: 38,  }}>
+          <Typo size={32} fontWeight={"800"} style={{ lineHeight: 38 }}>
             Get Started
           </Typo>
         </View>
-{/* Underline separator */}
-<View
-    style={{
-      height: 3,
-      backgroundColor: colors.primary,
-      width: 80,
-      marginVertical: spacingY._3,
-      borderRadius: 2,
-      alignSelf: "flex-start",
-    }}
-  />
+        {/* Underline separator */}
+        <View
+          style={{
+            height: 3,
+            backgroundColor: colors.primary,
+            width: 80,
+            marginVertical: spacingY._3,
+            borderRadius: 2,
+            alignSelf: "flex-start",
+          }}
+        />
         <View style={styles.form}>
           <Typo size={16} color={colors.textLight}>
             Enter your name and set a 4-digit PIN
@@ -113,6 +122,8 @@ const Register = () => {
             }
           />
 
+          <CurrencyDropdown selected={currency} onChange={setCurrency} />
+
           <Button loading={isLoading} onPress={handleSubmit}>
             <Typo fontWeight={"700"} color={colors.black} size={20}>
               Register
@@ -129,11 +140,15 @@ const Register = () => {
           </Pressable>
         </View>
         <View style={styles.securityInfoContainer}>
-  <Info size={16} color={colors.textLight} weight="regular" />
-  <Typo size={14} color={colors.textLight} style={{ marginLeft: 6, flex: 1 }}>
-    Your PIN and biometric data are securely stored and never shared.
-  </Typo>
-</View>
+          <Info size={16} color={colors.textLight} weight="regular" />
+          <Typo
+            size={14}
+            color={colors.textLight}
+            style={{ marginLeft: 6, flex: 1 }}
+          >
+            Your PIN and biometric data are securely stored and never shared.
+          </Typo>
+        </View>
       </View>
     </ScreenWrapper>
   );

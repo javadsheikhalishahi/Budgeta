@@ -1,5 +1,7 @@
+import Confirmation from "@/components/Confirmation";
 import Header from "@/components/Header";
 import ScreenWrapper from "@/components/ScreenWrapper";
+import TrendAlert from "@/components/TrendAlert";
 import Typo from "@/components/Typo";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { UserType, useAuth } from "@/contexts/authContext";
@@ -8,36 +10,44 @@ import { verticalScale } from "@/utils/styling";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
+import { useRouter } from "expo-router";
 import * as Icons from "phosphor-react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 
 const Profile = () => {
   const { user, setUser } = useAuth();
+  const [alertType, setAlertType] = useState<"error" | "success" | "info">("error");
+  const [alertVisible, setAlertVisible] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertConfirmVisible, setAlertConfirmVisible] = useState(false);
+  const router = useRouter();
+  const { fullReset } = useAuth();
+  
   const accountOptions: accountOptionType[] = [
     {
       title: "Edit Profile",
-      icon: <Icons.User size={26} color={colors.white} weight="fill" />,
+      icon: <Icons.User size={30} color={colors.white} weight="fill" />,
       routeName: "/(modals)/profileModal",
       bgColor: "#6366f1",
     },
     {
       title: "Settings",
-      icon: <Icons.Gear size={26} color={colors.white} weight="fill" />,
-      routeName: "/(modals)/profileModal",
+      icon: <Icons.Gear size={30} color={colors.white} weight="fill" />,
+      routeName: "/(modals)/settingsModal",
       bgColor: "#059669",
     },
     {
       title: "Privacy Policy",
-      icon: <Icons.LockKey size={26} color={colors.white} weight="fill" />,
-      routeName: "/(modals)/profileModal",
+      icon: <Icons.LockKey size={30} color={colors.white} weight="fill" />,
+      routeName: "/(modals)/privacyModal",
       bgColor: colors.neutral600,
     },
     {
       title: "Logout",
       icon: <Icons.Power size={30} color={colors.white} weight="fill" />,
-      routeName: "/(modals)/profileModal",
-      bgColor: colors.rose,
+      bgColor: "#f00a21",
     },
   ];
 
@@ -69,10 +79,55 @@ const Profile = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await fullReset();
+      console.log("App fully reset after logout");
+    } catch (e) {
+      console.error("Full reset failed", e);
+    }
+  };
+ 
+  const showLogoutAlert = () => {
+    setAlertType("error");
+    setAlertMessage("Logging out will delete your PIN, profile, and all stored data. This cannot be undone.");
+    setAlertConfirmVisible(true);
+  };
+
+  const handlePress = (item: accountOptionType) => {
+     if (item.title == 'Logout'){
+      showLogoutAlert();
+     }
+
+     if (item.routeName) router.push(item.routeName)
+  };
+
   return (
     <ScreenWrapper>
+      <TrendAlert
+        visible={alertVisible}
+        message={alertMessage}
+        type={alertType}
+        onClose={() => setAlertVisible(false)}
+      />
+
+      {/* Confirmation Modal */}
+<Confirmation
+  visible={alertConfirmVisible}
+  title="Logout"
+  message="Logging out will delete your PIN, profile, and all stored data. This cannot be undone."
+  confirmText="Logout"
+  cancelText="Cancel"
+  icon={<Icons.WarningCircleIcon size={40} color={colors.red} weight="fill" />}
+  onConfirm={() => {
+    setAlertConfirmVisible(false);
+    handleLogout();
+  }}
+  onCancel={() => setAlertConfirmVisible(false)}
+/>
+      
       <View style={styles.container}>
-        <Header title="Profile" style={{ marginVertical: spacingY._10 }} />
+        <Header title="Profile" style={{ marginVertical: spacingY._12 }} />
 
         {/* Info */}
         <View style={styles.userInfo}>
@@ -102,8 +157,8 @@ const Profile = () => {
             {
               accountOptions.map((item, index) => {
                  return (
-                  <View key={item.title || index} style={styles.listItem}>
-                     <TouchableOpacity style={styles.flexRow}>
+                  <Animated.View entering={FadeInDown.delay(index * 50).springify().damping(15)} key={index.toString()} style={styles.listItem}>
+                     <TouchableOpacity style={styles.flexRow} onPress={() => handlePress(item)}>
                          {/*icons list */}
                          <View style={[
                             styles.listIcon,
@@ -120,7 +175,7 @@ const Profile = () => {
                            color={colors.white}
                          />
                      </TouchableOpacity>
-                  </View>
+                  </Animated.View>
                  )
               })
             }

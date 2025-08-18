@@ -4,20 +4,23 @@ import { BlurView } from "expo-blur";
 import * as Icon from "phosphor-react-native";
 import React, { useEffect, useState } from "react";
 import {
-    AccessibilityRole,
-    Animated,
-    Easing,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  AccessibilityRole,
+  Animated,
+  Easing,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 interface TrendAlertProps {
   visible: boolean;
   message: string;
   type?: "error" | "success" | "info";
+  onConfirm?: () => void;
   onClose?: () => void;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 const TrendAlert: React.FC<TrendAlertProps> = ({
