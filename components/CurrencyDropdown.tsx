@@ -12,7 +12,7 @@ type CurrencyDropdownProps = {
 const currencies = [
   { label: "USD", value: "USD", color: colors.primary, icon: Icon.CurrencyDollar },
   { label: "POUND", value: "POUND", color: colors.primaryDark, icon: Icon.CurrencyGbp },
-  { label: "ریال", value: "ریال", color: colors.yellow, icon: Icon.CurrencyDollar },
+  { label: "IRR", value: "IRR", color: colors.yellow, icon: Icon.CurrencyDollar },
 ];
 
 const CurrencyDropdown: React.FC<CurrencyDropdownProps> = ({ selected, onChange }) => {

@@ -1,8 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 import { Icon } from "phosphor-react-native";
 import React, { ReactNode } from "react";
-import { TextInput, TextInputProps, TextProps, TextStyle, TouchableOpacityProps, ViewStyle } from "react-native";
-
+import { ImageStyle, StyleProp, TextInput, TextInputProps, TextProps, TextStyle, TouchableOpacityProps, ViewStyle } from "react-native";
 export type ScreenWrapperProps = {
     style?: ViewStyle;
     children: React.ReactNode;
@@ -122,7 +121,7 @@ export type ImageUploadProps = {
     onSelect: (file: any) => void;
     onClear: () => void;
     containerStyle?: ViewStyle;
-    imageStyle?: ViewStyle;
+    imageStyle?: StyleProp<ImageStyle>;
     placeholder?: string;
 };
 
@@ -174,5 +173,7 @@ export type WalletType = {
     totalExpense?: number;
     image: any;
     uid?: string;
-    created?: Date;
+    created?: string;
+    currency?:string;
+    updated?: string
 };

@@ -2,11 +2,11 @@ import { colors } from "@/constants/theme";
 import { ScreenWrapperProps } from "@/type";
 import React from "react";
 import {
-    Dimensions,
-    Platform,
-    StatusBar,
-    StyleSheet,
-    View
+  Dimensions,
+  Platform,
+  StatusBar,
+  StyleSheet,
+  View
 } from "react-native";
 
 const { height } = Dimensions.get("window");
