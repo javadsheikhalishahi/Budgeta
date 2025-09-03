@@ -70,7 +70,7 @@ export type TransactionType = {
     description?: string;
     image?: any;
     uid?: string;
-    wallerId: string;
+    walletId: string;
 };
 
 export type CategoryType = {
@@ -84,17 +84,21 @@ export type ExpenseCategoriesType = {
     [key: string]: CategoryType;
 };
 
+
 export type TransactionListType = {
     data: TransactionType[];
     title?: string;
     loading?: boolean;
     emptyListMessage?: string;
+    selectedWalletId?: string;
+    currency: string;
 };
 
 export type TransactionItemProps = {
     item: TransactionType;
     index: number;
     handleClick: Function;
+    currency: string
 };
 
 // Inputs
@@ -166,6 +170,8 @@ export type ResponseType = {
 };
 
 export type WalletType = {
+    savings: any;
+    transactions: any;
     id?: string;
     name: string;
     amount?: number;
@@ -175,5 +181,7 @@ export type WalletType = {
     uid?: string;
     created?: string;
     currency?:string;
-    updated?: string
+    updated?: string;
+    limit?: number;
+    used?: number;
 };

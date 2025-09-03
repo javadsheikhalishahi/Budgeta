@@ -71,7 +71,7 @@ const Wallet = () => {
   // Animate tabs and balance when currency changes
   useEffect(() => {
     if (!selectedCurrency) return;
-  
+
     // Tab & balance animation (already there)
     tabScale.setValue(0.95);
     Animated.spring(tabScale, {
@@ -79,7 +79,7 @@ const Wallet = () => {
       useNativeDriver: true,
       bounciness: 10,
     }).start();
-  
+
     balanceScale.setValue(0.95);
     balanceOpacity.setValue(0);
     Animated.parallel([
@@ -94,8 +94,8 @@ const Wallet = () => {
         useNativeDriver: true,
       }),
     ]).start();
-  
-    // 🔥 Small cards reset + animate in
+
+    //  Small cards reset + animate in
     smallCardsTranslateY.setValue(20);
     smallCardsOpacity.setValue(0);
     Animated.parallel([
@@ -110,12 +110,11 @@ const Wallet = () => {
       }),
     ]).start();
   }, [selectedCurrency]);
-  
 
   useFocusEffect(
     useCallback(() => {
       loadWallets();
-  
+
       // Animate small cards + list when screen opens
       Animated.parallel([
         Animated.spring(smallCardsTranslateY, {
@@ -299,7 +298,7 @@ const Wallet = () => {
                         selectedCurrency === "USD"
                           ? colors.green
                           : selectedCurrency === "POUND"
-                          ? colors.primaryDark
+                          ? colors.primaryLight
                           : colors.yellow
                       }
                     >
@@ -322,14 +321,14 @@ const Wallet = () => {
 
                 {/* Bottom Row: Two Smaller Cards */}
                 <Animated.View
-  style={[
-    styles.smallCardsGrid,
-    {
-      opacity: smallCardsOpacity,
-      transform: [{ translateY: smallCardsTranslateY }],
-    },
-  ]}
->
+                  style={[
+                    styles.smallCardsGrid,
+                    {
+                      opacity: smallCardsOpacity,
+                      transform: [{ translateY: smallCardsTranslateY }],
+                    },
+                  ]}
+                >
                   {/* Left Card: Number of Wallets */}
                   <View
                     style={[
@@ -373,7 +372,6 @@ const Wallet = () => {
 
                   {/* Right Card: Last Wallet Trend */}
                   <View style={[styles.smallCard]}>
-
                     <Typo size={verticalScale(12)} color={colors.neutral400}>
                       Last Wallet
                     </Typo>
@@ -439,16 +437,15 @@ const Wallet = () => {
           </View>
 
           {/* Wallet List */}
-          
           <Animated.View
-  style={[
-    styles.wallets,
-    {
-      opacity: smallCardsOpacity,
-      transform: [{ translateY: smallCardsTranslateY }],
-    },
-  ]}
->
+            style={[
+              styles.wallets,
+              {
+                opacity: smallCardsOpacity,
+                transform: [{ translateY: smallCardsTranslateY }],
+              },
+            ]}
+          >
             {/* Border Overlay */}
             <View style={styles.borderOverlay} pointerEvents="none" />
 
@@ -474,6 +471,7 @@ const Wallet = () => {
             </View>
 
             <FlatList
+              showsVerticalScrollIndicator={false}
               data={wallets.filter(
                 (w) => w.currency === selectedCurrency || !selectedCurrency
               )}
@@ -684,6 +682,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: radius._30,
     padding: spacingX._20,
     paddingTop: spacingY._25,
+    paddingBottom: spacingY._40,
     overflow: "hidden",
   },
 
@@ -704,7 +703,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: colors.neutral850,
     marginTop: spacingY._3,
-    padding: spacingX._10,
+    padding: spacingX._3,
     borderRadius: radius._20,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 8 },
