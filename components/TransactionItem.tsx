@@ -26,6 +26,18 @@ const TransactionItem = ({
   const IconComponent = category?.icon;
   const color = typeColors[item.type as "income" | "expense"];
 
+  const displayCurrency = item.currency || currency || "USD";
+  
+  // Then use displayCurrency for showing the symbol
+  const getSymbol = (cur: string) => {
+    switch (cur) {
+      case "USD": return "$";
+      case "GBP": return "£";
+      case "IRR": return "﷼";
+      default: return cur;
+    }
+  };
+
   // --- Time & Date Helpers ---
   const getDateLabel = (date: string | Date | Timestamp) => {
     let dt: Date;
@@ -69,7 +81,7 @@ const TransactionItem = ({
     switch (cur) {
       case "USD":
         return "$";
-      case "POUND":
+      case "GBP":
         return "£";
       case "IRR":
         return "﷼";
@@ -167,7 +179,7 @@ const TransactionItem = ({
               }}
             >
               <Typo fontWeight="bold" color={color} size={18}>
-                {getCurrencySymbol(currency)}
+                {getSymbol(displayCurrency)} 
               </Typo>
               <Typo
                 fontWeight="600"

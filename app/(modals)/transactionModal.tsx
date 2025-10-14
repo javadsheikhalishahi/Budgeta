@@ -35,7 +35,7 @@ interface TransactionModalProps {
 
 const currencyColors: Record<string, string> = {
   USD: colors.green,
-  POUND: colors.primaryLight,
+  GBP: colors.primaryLight,
   IRR: colors.yellow,
 };
 
@@ -43,7 +43,7 @@ const getCurrencySymbol = (cur: string) => {
   switch (cur) {
     case "USD":
       return "$";
-    case "POUND":
+    case "GBP":
       return "£";
     case "IRR":
       return "﷼";
@@ -208,6 +208,7 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
           description,
           date,
           walletId,
+          currency: ""
         };
         updatedTransactions = [...stored, newTransaction];
       }
@@ -281,6 +282,27 @@ const TransactionModal: React.FC<TransactionModalProps> = ({
       ? "orange"
       : "red";
 
+      useEffect(() => {
+        const migrateWallets = async () => {
+          try {
+            const raw = await AsyncStorage.getItem("wallets");
+            if (!raw) return;
+      
+            const wallets = JSON.parse(raw);
+      
+            const fixed = wallets.map((w: any) =>
+              w.currency === "POUND" ? { ...w, currency: "GBP" } : w
+            );
+      
+            await AsyncStorage.setItem("wallets", JSON.stringify(fixed));
+          } catch (e) {
+            console.log("Migration error:", e);
+          }
+        };
+      
+        migrateWallets();
+      }, []);
+      
   return (
     <ModalWrapper bg={colors.black}>
       <TrendAlert

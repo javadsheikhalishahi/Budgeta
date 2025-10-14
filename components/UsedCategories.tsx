@@ -2,7 +2,7 @@ import { expenseCategories, incomeCategories } from "@/constants/data";
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { TransactionType } from "@/type";
 import { verticalScale } from "@/utils/styling";
-import { LinearGradient } from "expo-linear-gradient"; // Make sure to install: expo install expo-linear-gradient
+import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect } from "expo-router";
 import * as Icons from "phosphor-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";

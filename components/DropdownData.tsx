@@ -5,7 +5,6 @@ import * as Icons from "phosphor-react-native";
 import React, { useRef, useState } from "react";
 import {
   Animated,
-  LayoutAnimation,
   ScrollView,
   StyleSheet,
   Text,
@@ -43,7 +42,6 @@ const DropdownData: React.FC<DropdownProps> = ({ items, selectedValue, onSelect,
   };
 
   const toggleDropdown = () => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     const newOpen = !open;
     setOpen(newOpen);
 

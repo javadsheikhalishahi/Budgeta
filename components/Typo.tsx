@@ -8,6 +8,7 @@ const Typo = ({
   size,
   color = colors.text,
   fontWeight = "500",
+  fontStyle,
   children,
   style,
   textProps = {},
@@ -16,6 +17,7 @@ const Typo = ({
     fontSize: size ? verticalScale(size) : verticalScale(18),
     color,
     fontWeight,
+    fontStyle
   };
   return (
     <Text style={[textStyle, style]} {...textProps}>

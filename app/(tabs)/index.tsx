@@ -59,20 +59,37 @@ const Home = () => {
       loadTransactions();
     }, [])
   );
+
   //  Load wallets from AsyncStorage
   const loadWallets = async () => {
-    const storedWalletsRaw = await AsyncStorage.getItem("wallets");
-    const storedWallets: WalletType[] = storedWalletsRaw
-      ? JSON.parse(storedWalletsRaw)
-      : [];
-    setWallets(storedWallets);
+  const storedWalletsRaw = await AsyncStorage.getItem("wallets");
+  const storedWallets: WalletType[] = storedWalletsRaw
+    ? JSON.parse(storedWalletsRaw)
+    : [];
+  setWallets(storedWallets);
 
-    // Update selected wallet reference
-    if (selectedWallet) {
-      const updated = storedWallets.find((w) => w.id === selectedWallet.id);
-      setSelectedWallet(updated || null);
+  // Load the previously selected wallet
+  const savedWalletId = await AsyncStorage.getItem("selectedWalletId");
+  if (savedWalletId) {
+    const savedWallet = storedWallets.find(w => w.id === savedWalletId);
+    if (savedWallet) {
+      setSelectedWallet(savedWallet);
+      return;
     }
-  };
+  }
+  
+  // Fallback: select first wallet if none is saved
+  if (storedWallets.length > 0 && !selectedWallet) {
+    setSelectedWallet(storedWallets[0]);
+  }
+};
+
+const handleWalletSelect = (wallet: WalletType) => {
+  setSelectedWallet(wallet);
+  if (wallet.id) {
+    AsyncStorage.setItem("selectedWalletId", wallet.id);
+  }
+};
 
   //  Load wallets on screen focus
   useFocusEffect(
@@ -94,7 +111,7 @@ const Home = () => {
   };
 
   const totals = getTotals();
-  const currencies = Object.keys(totals); // ["USD", "POUND", "IRR"] dynamically
+  const currencies = Object.keys(totals); // ["USD", "GBP", "IRR"] dynamically
 
   // Calculate total income and expense for the selected wallet
   const getWalletTotals = (walletId?: string) => {
@@ -333,7 +350,7 @@ useFocusEffect(
               currency={currencies[0]}
               total={totals[currencies[0]]}
               selectedWallet={selectedWallet}
-              onWalletSelect={setSelectedWallet}
+              onWalletSelect={handleWalletSelect}
               selectedWalletTotals={walletTotals}
               lastTransaction={
                 getLastTransaction(selectedWallet?.id) as

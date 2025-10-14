@@ -26,6 +26,13 @@ export default function CustomTabs({ state, descriptors, navigation }: BottomTab
         color={isFocused ? colors.primaryLight : colors.neutral400}
       />
     ),
+    goal: (isFocused: boolean) => (
+      <Icons.Target
+        size={verticalScale(28)}
+        weight={isFocused ? "fill" : "regular"}
+        color={isFocused ? colors.secondaryPurple : colors.neutral400}
+      />
+    ),
     wallet: (isFocused: boolean) => (
       <Icons.Wallet
         size={verticalScale(28)}

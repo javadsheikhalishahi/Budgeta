@@ -153,8 +153,8 @@ const Settings: React.FC = () => {
 
   const currencySymbols: Record<string, string> = {
     USD: "$",
-    POUND: "£",
-    ریال: "ریال",
+    GBP: "£",
+    IRR: "ریال",
   };
 
   const getCurrencySymbol = (code: string) => currencySymbols[code] || code;

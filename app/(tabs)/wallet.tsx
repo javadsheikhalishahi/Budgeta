@@ -205,7 +205,7 @@ const Wallet = () => {
     switch (currency) {
       case "USD":
         return "$";
-      case "POUND":
+      case "GBP":
         return "£";
       case "IRR":
         return "﷼";
@@ -214,6 +214,27 @@ const Wallet = () => {
     }
   };
 
+  useEffect(() => {
+    const migrateWallets = async () => {
+      try {
+        const raw = await AsyncStorage.getItem("wallets");
+        if (!raw) return;
+  
+        const wallets = JSON.parse(raw);
+  
+        const fixed = wallets.map((w: any) =>
+          w.currency === "POUND" ? { ...w, currency: "GBP" } : w
+        );
+  
+        await AsyncStorage.setItem("wallets", JSON.stringify(fixed));
+      } catch (e) {
+        console.log("Migration error:", e);
+      }
+    };
+  
+    migrateWallets();
+  }, []);
+  
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScreenWrapper style={{ backgroundColor: colors.black }}>
@@ -231,7 +252,7 @@ const Wallet = () => {
               >
                 {currencies.map((currency) => {
                   let symbol =
-                    currency === "USD" ? "$" : currency === "POUND" ? "£" : "﷼";
+                    currency === "USD" ? "$" : currency === "GBP" ? "£" : "﷼";
 
                   const isActive = selectedCurrency === currency;
                   return (
@@ -297,14 +318,14 @@ const Wallet = () => {
                       color={
                         selectedCurrency === "USD"
                           ? colors.green
-                          : selectedCurrency === "POUND"
+                          : selectedCurrency === "GBP"
                           ? colors.primaryLight
                           : colors.yellow
                       }
                     >
                       {selectedCurrency === "USD"
                         ? "$"
-                        : selectedCurrency === "POUND"
+                        : selectedCurrency === "GBP"
                         ? "£"
                         : "﷼"}
                     </Typo>

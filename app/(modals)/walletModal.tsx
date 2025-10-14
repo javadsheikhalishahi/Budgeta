@@ -125,6 +125,9 @@ const WalletModal: React.FC<WalletModalProps> = ({
           image,
           created: currentDate,
           updated: currentDate,
+          savings: undefined,
+          transactions: undefined,
+          isLiveBalance: undefined
         };
         updatedWallets = [...storedWallets, newWallet];
       }
@@ -149,11 +152,32 @@ const WalletModal: React.FC<WalletModalProps> = ({
 
   const currencySymbols: Record<string, string> = {
     USD: "$",
-    POUND: "£",
+    GBP: "£",
     ریال: "ریال",
   };
   const getCurrencySymbol = (code: string) => currencySymbols[code] || code;
 
+  useEffect(() => {
+    const migrateWallets = async () => {
+      try {
+        const raw = await AsyncStorage.getItem("wallets");
+        if (!raw) return;
+  
+        const wallets = JSON.parse(raw);
+  
+        const fixed = wallets.map((w: any) =>
+          w.currency === "POUND" ? { ...w, currency: "GBP" } : w
+        );
+  
+        await AsyncStorage.setItem("wallets", JSON.stringify(fixed));
+      } catch (e) {
+        console.log("Migration error:", e);
+      }
+    };
+  
+    migrateWallets();
+  }, []);
+  
   if (walletId && !wallet) {
     return (
       <ModalWrapper bg={colors.black}>

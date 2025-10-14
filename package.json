@@ -43,11 +43,13 @@
     "react-native-chart-kit": "^6.12.0",
     "react-native-date-picker": "^5.0.13",
     "react-native-gesture-handler": "~2.24.0",
+    "react-native-gifted-charts": "^1.4.64",
     "react-native-linear-gradient": "^2.8.3",
     "react-native-reanimated": "~3.17.4",
     "react-native-safe-area-context": "5.4.0",
     "react-native-screens": "~4.11.1",
     "react-native-shadow-2": "^7.1.2",
+    "react-native-svg": "^15.12.1",
     "react-native-ui-datepicker": "^3.1.2",
     "react-native-web": "~0.20.0",
     "react-native-webview": "13.13.5"

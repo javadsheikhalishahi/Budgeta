@@ -1,5 +1,7 @@
 import { colors, radius, spacingX, spacingY } from "@/constants/theme";
 import { WalletType } from "@/type";
+import { formatnumber } from "@/utils/Formatnumber";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LinearGradient } from "expo-linear-gradient"; // only if using Expo
 import * as Icons from "phosphor-react-native";
 import React, { useEffect, useMemo, useRef, useState } from "react";
@@ -42,7 +44,7 @@ interface WalletSelectorProps {
 
 const currencyColors: Record<string, string> = {
   USD: colors.green,
-  POUND: colors.primaryLight,
+  GBP: colors.primaryLight,
   IRR: colors.yellow,
 };
 
@@ -65,6 +67,8 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
       ),
     [wallets]
   );
+
+  
 
   const [selectedCurrency, setSelectedCurrency] = useState<string>(
     currencies[0] || ""
@@ -123,7 +127,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
     switch (cur) {
       case "USD":
         return "$";
-      case "POUND":
+      case "GBP":
         return "£";
       case "IRR":
         return "﷼";
@@ -281,6 +285,27 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
     };
   };
 
+  useEffect(() => {
+    const migrateWallets = async () => {
+      try {
+        const raw = await AsyncStorage.getItem("wallets");
+        if (!raw) return;
+  
+        const wallets = JSON.parse(raw);
+  
+        const fixed = wallets.map((w: any) =>
+          w.currency === "POUND" ? { ...w, currency: "GBP" } : w
+        );
+  
+        await AsyncStorage.setItem("wallets", JSON.stringify(fixed));
+      } catch (e) {
+        console.log("Migration error:", e);
+      }
+    };
+  
+    migrateWallets();
+  }, []);
+  
   return (
     <View style={{ flex: 1, padding: spacingX._3 }}>
       {/* Currency Tabs */}
@@ -577,11 +602,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
                   color={currencyColors[selectedWallet.currency || "USD"]}
                   style={{ marginLeft: 8 }}
                 >
-                  {(
-                    (selectedWallet.amount || 0) +
-                    (selectedWalletTotals?.totalIncome || 0) -
-                    (selectedWalletTotals?.totalExpense || 0)
-                  ).toLocaleString()}
+                  {(selectedWallet.amount || 0).toLocaleString()}
                 </Typo>
               </View>
             </View>
@@ -650,8 +671,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
                 Income
               </Typo>
               <Typo size={18} fontWeight="700" color="#10B981">
-                {getCurrencySymbol(selectedWallet.currency || "")}{" "}
-                {selectedWalletTotals?.totalIncome?.toLocaleString() || 0}
+              {formatnumber(selectedWalletTotals?.totalIncome || 0, getCurrencySymbol(selectedWallet.currency || ""))}
               </Typo>
             </View>
           </LinearGradient>
@@ -685,8 +705,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
                 Expense
               </Typo>
               <Typo size={18} fontWeight="700" color="#EF4444">
-                {getCurrencySymbol(selectedWallet.currency || "")}{" "}
-                {selectedWalletTotals?.totalExpense?.toLocaleString() || 0}
+              {formatnumber(selectedWalletTotals?.totalExpense || 0, getCurrencySymbol(selectedWallet.currency || ""))}
               </Typo>
             </View>
           </LinearGradient>
@@ -748,11 +767,10 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
                 Saving
               </Typo>
               <Typo size={18} fontWeight="700" color="#3B82F6">
-                {getCurrencySymbol(selectedWallet.currency || "")}{" "}
-                {(
-                  (selectedWalletTotals?.totalIncome || 0) -
-                  (selectedWalletTotals?.totalExpense || 0)
-                ).toLocaleString()}
+              {formatnumber(
+    (selectedWalletTotals?.totalIncome || 0) - (selectedWalletTotals?.totalExpense || 0),
+    getCurrencySymbol(selectedWallet.currency || "")
+  )}
               </Typo>
 
               {/* Progress Bar */}
@@ -807,7 +825,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
               end={{ x: 0.3, y: 0.8 }}
               style={{
                 padding: 12,
-                borderRadius: radius._17,
+                borderRadius: radius._12,
                 borderWidth: 1,
                 borderColor:
                   lastTransaction.type === "income"
@@ -818,6 +836,7 @@ const WalletSelector: React.FC<WalletSelectorProps> = ({
                 shadowOpacity: 0.25,
                 shadowRadius: 14,
                 shadowOffset: { width: 0, height: 8 },
+                
               }}
             >
               <View
