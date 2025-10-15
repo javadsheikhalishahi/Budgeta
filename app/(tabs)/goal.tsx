@@ -22,6 +22,7 @@ import {
 import Svg, { Circle, G } from 'react-native-svg';
 
 const { width } = Dimensions.get('window');
+const CARD_WIDTH = (width - 60) / 2;
 
 // Currency types and constants
 type Currency = 'USD' | 'GBP' | 'IRR' | 'EUR';
@@ -985,21 +986,21 @@ const GoalsSavingsTab: React.FC = () => {
       {/* Enhanced Stats Dashboard */}
       <View style={styles.statsDashboard}>
         {/* Saved Amount Card */}
-        <View style={styles.statCard}>
+        <View style={[styles.statCard, { width: CARD_WIDTH }]}>
           <LinearGradient
             colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']}
             style={styles.statCardGradient}
           >
             <View style={styles.statHeader}>
               <View style={styles.statIconContainer}>
-                <Ionicons name="wallet" size={20} color="#10B981" />
+                <Icons.WalletIcon size={width * 0.05} color="#10B981" weight='fill' />
               </View>
               <View style={styles.statTrend}>
-                <Ionicons name="trending-up" size={15} color="#10B981" />
+                <Ionicons name="trending-up" size={width * 0.035} color="#10B981" />
                 <Text style={styles.trendText}>Saved</Text>
               </View>
             </View>
-            <Text style={styles.statAmount}>{formatCurrency(totalSaved)}</Text>
+            <Text style={[styles.statAmount, { fontSize: width * 0.05 }]}>{formatCurrency(totalSaved)}</Text>
             <Text style={styles.statLabel}>Total Saved</Text>
             <View style={styles.statProgress}>
               <View style={[styles.statProgressBar, { width: `${Math.min((totalSaved / Math.max(totalTarget, 1)) * 100, 100)}%` }]} />
@@ -1021,21 +1022,21 @@ const GoalsSavingsTab: React.FC = () => {
         </View>
 
         {/* Target Amount Card */}
-        <View style={styles.statCard}>
+        <View style={[styles.statCard, { width: CARD_WIDTH }]}>
           <LinearGradient
             colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.05)']}
             style={styles.statCardGradient}
           >
             <View style={styles.statHeader}>
               <View style={styles.statIconContainer}>
-                <Icons.Target size={20} color="#3B82F6" />
+                <Icons.Target size={width * 0.05} color="#3B82F6" weight='fill'/>
               </View>
               <View style={styles.statTrend}>
-                <Ionicons name="star" size={15} color="#3B82F6" />
+                <Ionicons name="star" size={width * 0.035} color={colors.yellow} />
                 <Text style={styles.trendText}>Target</Text>
               </View>
             </View>
-            <Text style={styles.statAmount}>{formatCurrency(totalTarget)}</Text>
+            <Text style={[styles.statAmount, { fontSize: width * 0.05 }]}>{formatCurrency(totalTarget)}</Text>
             <Text style={styles.statLabel}>Total Target</Text>
             <View style={styles.statProgress}>
               <View style={[styles.statProgressBar, { width: '100%', backgroundColor: 'rgba(59, 130, 246, 0.6)' }]} />
@@ -2285,6 +2286,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+    flexWrap: 'wrap',
   },
   statCard: {
     flex: 1,
@@ -2309,9 +2311,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   statIconContainer: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: '12%',
+    aspectRatio: 1,
+    borderRadius: 50,
     backgroundColor: 'rgba(255,255,255,0.1)',
     justifyContent: 'center',
     alignItems: 'center',
@@ -2358,7 +2360,7 @@ const styles = StyleSheet.create({
   progressCenterpiece: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 15,
+    marginHorizontal: 8,
     position: 'relative',
   },
   progressOrb: {
